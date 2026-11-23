@@ -117,6 +117,9 @@ class Manager():
     def remove(self, album: Album) -> None:
         self.albums.remove(album)
 
+    def filter(self, artist: str) -> list[Album]:
+        return [album for album in self.albums if album.artist == artist]
+
     def __init__(self, albums: list[Album] = []) -> None:
         self.albums = albums
         self.sort()
@@ -142,6 +145,9 @@ class Manager():
             out += "\n  " + f"{album.artist:<{max_len_artist}} {album.name:<{max_len_name}} {album.time}"
 
         return out
+
+    def __len__(self) -> int:
+        return len(self.albums)
     
 # -- Testing -- #
 if __name__ == "__main__":

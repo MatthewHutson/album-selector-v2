@@ -77,7 +77,6 @@ class UserCommands(discord.Cog):
         data: Manager = load_albums(user.id)
         command_count += 1
     
-        channel = await user.create_dm()
         await ctx.respond('Select an option:', view=AlbumView(text = "Make A Choice", data = data))
         command_count =- 1
 
@@ -88,8 +87,6 @@ class UserCommands(discord.Cog):
         user: discord.User = ctx.author
         data: Manager = load_albums(user.id)
         command_count += 1
-
-        channel = await user.create_dm()
 
         if not self.positive_integer_check(length):
             await ctx.respond('ERROR: The album length is not an positive integer number of minutes!')
@@ -116,7 +113,6 @@ class UserCommands(discord.Cog):
         data: Manager = load_albums(user.id)
         command_count += 1
     
-        channel = await user.create_dm()
         album_list = data.get_albums(album_name, artist) # -- Only Length 1 or 0
 
         if len(album_list) == 1:
@@ -127,4 +123,21 @@ class UserCommands(discord.Cog):
         else:
             await ctx.respond(f"No album names `{album_name}` and released by `{artist}` exists in your save!")
                 
+        command_count =- 1
+
+    @discord.slash_command(description='Count the number of albums you have saved. You can filter this by artist.')
+    async def count(self, ctx: discord.ApplicationContext, artist: str = None) -> None:
+        global command_count
+            
+        user: discord.User = ctx.author
+        data: Manager = load_albums(user.id)
+        command_count += 1
+
+        if artist is None:
+            count = len(data)
+            await ctx.respond(f"You have {count} albums in your save!")
+        else:
+            count = len(data.filter(artist))
+            await ctx.respond(f"You have {count} albums by `{artist}` in your save!")
+
         command_count =- 1
